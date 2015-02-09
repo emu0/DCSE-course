@@ -1,0 +1,38 @@
+Cómo funciona VOLTIMETRO.VHDL:
+
+En esta placa de se le conecta un kit de expansión en el que recibe un vector de longitud 8 
+que tiene la información del valor de la señal analógica convertida. Tenemos un proceso en 
+el que creamos una señal cuadrada (variable 'senal') mediante la señal de reloj interno 
+(variable 'clk') y un contador (varibale 'ciclos'). Esta señal son los valores de CS y RD 
+del kit de expansión.
+
+Otro proceso se encarga de realizar la conversión de vector de bits a entero. Esta conversión
+se realiza cada vez que INT (valores del kit de expansión) toma valor 0 mediante una serie de 
+operaciones sencillas. Los valores calculados son pasados al display para mostrarlos.
+
+
+Cómo funciona GENERADOR.VHDL:
+
+Tenemos un switch de entrada con 6 interruptores organizados en 3 grupos de 2. Cada uno de 
+esos grupos controla la amplitud de la onda a generar, además de frecuencia y forma.
+Existe un proceso que se encarga en contar flancos de subida del reloj interno ('clk') hasta 
+el momento que llega a un determinado número (indicado por un WITH SELECT) que depende del 
+valor elegido de frecuencia. Cada vez que llega a ese valor cambia una señal interna ('conversion').
+
+Existe otro proceso que es sensible a la variable 'conversion'. Cuando esta variable vale 0, 
+avanza una variable llamada 'puntero', que indica la dirección del valor de la tabla que
+debe mostrarse a continuación.
+
+Existe otro proceso que es sensible a la variable 'WR', del kit de expansión, la cual es generada 
+automáticamente e indica que podemos escribir cuando vale 0. Escribimos el valor que queremos 
+convertir a Analógico mediante la variable entero 'DATA'. El valor asignado será el correspondiente 
+a la muestreada de la tabla que corresponda (se elegirá entre una tabal u otra en función de un 
+WITH SELECT sensible a los switch correspondientes a la forma de onda) en la dirección indicada 
+por 'direccion' y modificada en función del valor de amplitud elegido por el switch. Para acceder 
+a la tabla utilizamos el componente LPM_ROM. Las tablas han debido ser creadas anteriormente por nosotros.
+
+
+Cómo funciona DISPLAY7.VHDL:
+
+Consta de un proceso en el que en función del valor de un vector de entrada de 4 elementos, elige 
+mediante una sentencia CASE IS un vector de 8 elementos en la salida.
